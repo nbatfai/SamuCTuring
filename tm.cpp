@@ -7,7 +7,11 @@ main ()
   //14 314
   // TuringMachine<5> tm ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );
 
-  {TuringMachine<5> tm ( 9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
+{TuringMachine<5> tm ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 14, 5, 27, 7, 26, 8, 12, 9, 1);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
+{TuringMachine<5> tm ( 9, 0, 9, 1, 11, 2, 5, 3, 23, 4, 14, 5, 27, 7, 26, 8, 12, 9, 1);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
+
+
+//  {TuringMachine<5> tm ( 9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
   //{TuringMachine<5> tm ( 9, 0, 11, 1, 18, 2, 15, 3, 23, 4, 3, 5, 15, 7, 29, 8, 5, 9, 8);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
 
   /*

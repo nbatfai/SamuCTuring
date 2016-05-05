@@ -96,9 +96,9 @@ GameOfLife::GameOfLife ( int w, int h ) : m_w ( w ), m_h ( h )
 // tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8 );
 // tm = new TuringMachine<5> ( 9, 0, 16, 1, 14, 2, 18, 3, 11, 4, 27, 5, 29, 7, 27, 8, 21, 9, 12); //9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );//9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );
 
-// tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );//9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );
+ tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );//9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );
   
-   tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0 ); // Marxen-Buntrock, 4097
+//   tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0 ); // Marxen-Buntrock, 4097
 }
 
 GameOfLife::~GameOfLife()
@@ -130,11 +130,9 @@ void GameOfLife::run()
 {
 
   int **fp, **fr;
-  
-  
-      tm->restart_step_by_step();
-  
-  
+   
+  tm->restart_step_by_step();
+    
   while ( true )
     {
       //QThread::msleep ( m_delay );
@@ -151,14 +149,14 @@ void GameOfLife::run()
           if ( samuBrain )
             {
               samuBrain->learning ( lattices[latticeIndex], center_of_tape, 10, predictions, &fp, &fr );
-              std::cout << m_time
+              /*std::cout << m_time
                        << "   #MPUs:" << samuBrain->nofMPUs()
-                       << "Observation (MPU):" << samuBrain->get_foobar().c_str()<< std::endl;
+                       << "Observation (MPU):" << samuBrain->get_foobar().c_str()<< std::endl;*/
             }
             
           //emit cellsChanged ( lattices[latticeIndex], predictions, fp, fr );
 
-          std::cout  << ">>>" << m_time << ">>>"<< std::endl;
+//          std::cout  << ">>>" << m_time << ">>>"<< std::endl;
 
         }
     }

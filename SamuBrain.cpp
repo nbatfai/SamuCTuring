@@ -457,7 +457,10 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
 	   std::string pm = samuQl[r][c].printMachines();
 	   std::cout  << "**TM: " << pm.c_str()<< std::endl;
 	   
-	   std::string tm314 ("9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0");
+//	   std::string tm314 ("9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0");
+//
+
+std::string tm314 ("9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1");  
 std::size_t found = pm.find(tm314);
   if (found!=std::string::npos)
   {
@@ -586,13 +589,14 @@ bool Habituation::is_habituation ( int vsum, int sum, double &mon )
   if ( ( ++counter ) % 15 == 0 )
     sum10	= ssum;
 
+/*
   std::cout  << "   HABITUATION MONITOR:"
            << "(isHABI MPU)"
            << vsum << sum << mavsum << masum
            << masum - msum[ma_limit-1]
            << mavsum - asum[ma_limit-1]
            << "|||" << sum10 << ssum;
-
+*/
   if ( q != 0
        && q == w
        /*
@@ -696,34 +700,37 @@ void SamuBrain::learning ( int **reality, int * center_of_tape, int noc , int **
           bool habi2 =
             h2.is_habituation ( vsum2, sum2, mon2 );
 	 
-	    
+	    /*
 	      std::cout  << "   HABI2 MONITOR:"
                   << m_internal_clock
                    << "[SEARCHING] MPU:" << mpu.first.c_str()
 		   << vsum2 << sum2 
                    << "bogocertainty of convergence:"
                    << mon2*100 << "%";
-	    
+	    */
 	    
           Habituation &h = morgan->getHabituation();
           bool habi =
             h.is_habituation ( vsum, sum, mon );
 
+/*
           std::cout  << "   HABITUATION MONITOR:"
                    << m_internal_clock
                    << "[SEARCHING] MPU:" << mpu.first.c_str()
                    << "bogocertainty of convergence:"
                    << mon*100 << "%";
-
+*/
 
           if ( habi2 || mon2 >= .9 ) //.9 )
             {
               ++ell;
 
+/*
               std::cout  << "   KNOWLEDGE MONITOR:"
                        << m_internal_clock
                        << "[DETECTED] MPU:" << mpu.first.c_str()
                        << "ELL" << ell;
+                       */
             }            
             
             
@@ -735,10 +742,11 @@ void SamuBrain::learning ( int **reality, int * center_of_tape, int noc , int **
             
             
         } // for MPUs
-        
+      
+      /*  
       if(ell)  
       std::cout  << "   KNOWLEDGE MONITOR:";
-
+*/
 
       // nem baj, ha sokáig kell menni, mert a párhuzamos szálakból a kiválasztott
       // folytatódik, a párhuzamosság a költség, meg ha nem talál, hanem új MPU kell...
@@ -752,23 +760,25 @@ void SamuBrain::learning ( int **reality, int * center_of_tape, int noc , int **
             {
               m_morgan = newMPU();
 
+/*
               std::cout  << "   SENSITIZATION MONITOR:"
                        << m_internal_clock
                        << "MPU-notion:" << get_foobar ( ).c_str()
                        << "(new MPU, searching time)"
                        << t;
-
+*/
             }
           else
             {
               m_morgan = maxSamuQl;
 
+/*
               std::cout  << "   SENSITIZATION MONITOR:"
                        << m_internal_clock
                        << "MPU-notion:" << get_foobar ( ).c_str()
                        << "(recognized MPU, searching time)"
                        << t;
-
+*/
             }
 
           init_MPUs ( true );
@@ -796,12 +806,14 @@ void SamuBrain::learning ( int **reality, int * center_of_tape, int noc , int **
       if ( !m_haveAlreadyLearnt )
         {
 
+/*
           std::cout  << "   HABITUATION MONITOR:"
                    << m_internal_clock
                    << "[LEARNING]"
                    << get_foobar ( ).c_str()
                    << "bogocertainty of convergence:"
                    << mon*100 << "%";
+*/
 
           if ( m_habituation )
             {
@@ -814,34 +826,37 @@ void SamuBrain::learning ( int **reality, int * center_of_tape, int noc , int **
                   m_maxLearningTime = t;
                 }
 
-              std::cout  << "   HIGHER-ORDER NOTION MONITOR:"
+/*              std::cout  << "   HIGHER-ORDER NOTION MONITOR:"
                        << m_internal_clock
                        << "MPU-notion:" << get_foobar ( ).c_str()
                        << "(learning time)"
                        << t;
-
+*/
             }
 
         }
       else // már "megtanulta"
         {
 
+/*
           std::cout  << "   HABITUATION MONITOR:"
                    << m_internal_clock
                    << "[LEARNED]"
                    << get_foobar ( ).c_str()
                    << "bogocertainty of convergence:"
                    << mon*100 << "%";
+*/
 
           if ( h.is_newinput ( vsum, sum ) ) // && !m_habituation ) //&& mon != -1.0  /*&& mon != 1.0*/ )
             {
 
               if ( ++newc >=2 )
                 {
+                /*
                   std::cout  << "   SENSITIZATION MONITOR:"
                            << m_internal_clock
                            << "(new input detected)";
-
+*/
                   m_searching = true;
                   m_searchingStart = m_internal_clock;
 
