@@ -287,9 +287,12 @@ private:
 typedef std::string Feeling;
 #endif
 
-typedef int SPOTriplet;
+typedef std::tuple<int, int, int, int, int> Config5;
+typedef Config5 SPOTriplet;
+
+//typedef int SPOTriplet;
 //typedef std::pair<std::string, SPOTriplet> ReinforcedAction;
-typedef std::pair<int, SPOTriplet> ReinforcedAction;
+typedef std::pair<int, int> ReinforcedAction;
 
 class QL
 {
@@ -773,7 +776,7 @@ public:
         double q_spap;
         double min_q_spap = -std::numeric_limits<double>::max();
 
-        for ( std::map<SPOTriplet, std::map<int, double>>::iterator it=table_.begin(); it!=table_.end(); ++it ) {
+        for ( std::map<int, std::map<int, double>>::iterator it=table_.begin(); it!=table_.end(); ++it ) {
             q_spap = it->second[prg];
             if ( q_spap > min_q_spap ) {
                 min_q_spap = q_spap;
@@ -783,12 +786,12 @@ public:
         return min_q_spap;
     }
 
-    SPOTriplet argmax_ap_f ( int prg ) {
+    int argmax_ap_f ( int prg ) {
         double q_spap;
         double min_f = -std::numeric_limits<double>::max();
-        SPOTriplet ap;
+        int ap;
 
-        for ( std::map<SPOTriplet, std::map<int, double>>::iterator it=table_.begin(); it!=table_.end(); ++it ) {
+        for ( std::map<int, std::map<int, double>>::iterator it=table_.begin(); it!=table_.end(); ++it ) {
 
             q_spap = it->second[prg];
 
@@ -803,21 +806,34 @@ public:
         return ap;
     }
 
-    int exec ( int toi, int * center_of_tape, int noc ) {
+    SPOTriplet exec ( int toi, int * center_of_tape, int noc ) {
 
-        int b[3];
+        /*
+          int b[3];
 
-        b[0] = center_of_tape[noc-1];
-        b[1] = center_of_tape[noc];
-        b[2] = center_of_tape[noc+1];
+          b[0] = center_of_tape[noc-1];
+          b[1] = center_of_tape[noc];
+          b[2] = center_of_tape[noc+1];
 
-        //state = rules.to[toi][0];
-        //tape.set_tape ( tape.tapei, rules.to[toi][1] );
-        int tapei =  1;
-        b[tapei] = tr.to[toi][1];
+          //state = rules.to[toi][0];
+          //tape.set_tape ( tape.tapei, rules.to[toi][1] );
+          int tapei =  1;
+          b[tapei] = tr.to[toi][1];
+          tapei += ( tr.to[toi][2] - 1 );
+
+          return tr.to[toi][0] + 100 * b[tapei];
+        */
+
+
+        int tapei =  noc;
+        center_of_tape[tapei] = tr.to[toi][1];
         tapei += ( tr.to[toi][2] - 1 );
 
-        return tr.to[toi][0] + 100 * b[tapei];
+	center_of_tape[tapei] = tr.to[toi][0] + 100 * center_of_tape[tapei];
+	
+        return std::make_tuple(center_of_tape[tapei-2], center_of_tape[tapei-1],
+                center_of_tape[tapei],
+                center_of_tape[tapei+1], center_of_tape[tapei+2]);
 
     }
 
@@ -825,7 +841,7 @@ public:
 
     SPOTriplet operator() ( SPOTriplet triplet, int * center_of_tape, int noc, /*std::string prg,*/ bool isLearning ) {
 
-        int prg = triplet;
+        auto prg = std::get<2> ( triplet );
 
         // s' = triplet
         // r' = reward
@@ -847,10 +863,10 @@ public:
         if ( triplet == prev_action ) {
 
             //reinforced_action.first = prev_state;
-            if ( prev_state > 50 ) {
-                reinforced_action.first = ( prev_state-100 ) *2+1;
+            if ( std::get<2> ( prev_state ) > 50 ) {
+                reinforced_action.first = ( std::get<2> ( prev_state )-100 ) *2+1;
             } else {
-                reinforced_action.first =prev_state*2;
+                reinforced_action.first = std::get<2> ( prev_state ) *2;
             }
 
             reinforced_action.second = prev_action2;
@@ -861,7 +877,7 @@ public:
 
         SPOTriplet action = triplet;
         //SPOTriplet action2 = 0;
-        SPOTriplet action2 = -1;
+        int action2 = -1;
 
         if ( prev_reward >  -std::numeric_limits<double>::max() ) {
 
@@ -887,7 +903,7 @@ public:
                 */
 
 
-                ++frqs[prev_action2][prev_state];
+                ++frqs[prev_action2][std::get<2> ( prev_state)];
 
                 /*
                         for ( int i {0}; i<5*2*3; ++i ) {
@@ -897,14 +913,14 @@ public:
 
                 double max_ap_q_sp_ap = max_ap_Q_sp_ap ( prg );
 
-                table_[prev_action2][prev_state] =
-                    table_[prev_action2][prev_state] +
-                    alpha ( frqs[prev_action2][prev_state] ) *
-                    ( reward + gamma * max_ap_q_sp_ap - table_[prev_action2][prev_state] );
+                table_[prev_action2][std::get<2> ( prev_state )] =
+                    table_[prev_action2][std::get<2> ( prev_state )] +
+                    alpha ( frqs[prev_action2][std::get<2> ( prev_state )] ) *
+                    ( reward + gamma * max_ap_q_sp_ap - table_[prev_action2][std::get<2> ( prev_state )] );
             }
 
             action2 = argmax_ap_f ( prg );
-            if ( action2 != -1 && action2 != 99) {
+            if ( action2 != -1 && action2 != 99 ) {
                 action = exec ( action2, center_of_tape, noc );
             }
 
@@ -942,7 +958,7 @@ public:
 
     void clearn ( void ) {
 
-        for ( std::map<SPOTriplet, std::map<int, int>>::iterator it=frqs.begin(); it!=frqs.end(); ++it ) {
+        for ( std::map<int, std::map<int, int>>::iterator it=frqs.begin(); it!=frqs.end(); ++it ) {
 
             for ( std::map<int, int>::iterator itt=it->second.begin(); itt!=it->second.end(); ++itt ) {
                 itt->second = 0;
@@ -959,7 +975,7 @@ public:
     void debug_tree ( void ) {
         int save_depth = depth;
         depth = 0;
-        debug_tree ( &root, std::cerr );
+        //debug_tree ( &root, std::cerr );
         depth = save_depth;
     }
 
@@ -969,7 +985,7 @@ public:
 
     void scalen ( double s ) {
 
-        for ( std::map<SPOTriplet, std::map<int, int>>::iterator it=frqs.begin(); it!=frqs.end(); ++it ) {
+        for ( std::map<int, std::map<int, int>>::iterator it=frqs.begin(); it!=frqs.end(); ++it ) {
 
             for ( std::map<int, int>::iterator itt=it->second.begin(); itt!=it->second.end(); ++itt ) {
                 //itt->second -= ( itt->second / 5 );
@@ -1168,18 +1184,18 @@ public:
 
         return ss.str();
     }
-    
-    int frek(int from, int to)
-    {
+
+    int frek ( int from, int to ) {
         for ( auto& rule : rules ) {
-            if(rule.first.first == from && rule.first.second == to) 
-	      return rule.second;
+            if ( rule.first.first == from && rule.first.second == to ) {
+                return rule.second;
+            }
         }
-        
+
         return 0;
-      
+
     }
-    
+
     std::string printMachines() {
 
         std::stringstream ss;
@@ -1190,8 +1206,9 @@ public:
         for ( auto& rule : rules ) {
             if ( rule.second > 10*N_e && rule.first.first >= 0 ) {
                 machines[rule.first.first].push_back ( rule.first.second );
-		if(rule.second > maxs[rule.first.first])
-		  maxs[rule.first.first] = rule.second;
+                if ( rule.second > maxs[rule.first.first] ) {
+                    maxs[rule.first.first] = rule.second;
+                }
             }
         }
 
@@ -1199,15 +1216,15 @@ public:
         for ( auto& mm : machines ) {
             //int max = (4*maxs[mm.first])/5;
             int max = maxs[mm.first]/10;
-	    
-	    ss << "[" << max << "]";
-	    
-            mm.second.erase(std::remove_if (
-                mm.second.begin(), mm.second.end(),
+
+            ss << "[" << max << "]";
+
+            mm.second.erase ( std::remove_if (
+                                  mm.second.begin(), mm.second.end(),
             [=] ( int & n ) {
-                return frek(mm.first, n) < max;
+                return frek ( mm.first, n ) < max;
             } ), mm.second.end() );
-	    	    
+
         }
         ss << multTos ( machines );
 
@@ -1342,7 +1359,7 @@ private:
     std::random_device zinit;
     std::default_random_engine zgen {zinit() };
     */
-
+/*
     void debug_tree ( TripletNode * node, std::ostream & os ) {
         if ( node != nullptr ) {
             ++depth;
@@ -1365,7 +1382,7 @@ private:
             --depth;
         }
     }
-
+*/
     int N_e = 0;
 
     QL ( const QL & );
@@ -1379,7 +1396,7 @@ private:
 
 #ifdef Q_LOOKUP_TABLE
     //std::map<SPOTriplet, std::map<std::string, double>> table_;
-    std::map<SPOTriplet, std::map<int, double>> table_;
+    std::map<int, std::map<int, double>> table_;
 #else
     std::map<SPOTriplet, Perceptron*> prcps;
 #ifdef FEELINGS
@@ -1394,17 +1411,18 @@ private:
 #endif
 
     //std::map<SPOTriplet, std::map<std::string, int>> frqs;
-    std::map<SPOTriplet, std::map<int, int>> frqs;
+    std::map<int, std::map<int, int>> frqs;
 
 #ifdef FEELINGS
     std::map<Feeling, std::map<std::string, int>> frqs_f;
 #endif
-    SPOTriplet prev_action, prev_action2;
+    SPOTriplet prev_action;
+    int prev_action2;
 #ifdef FEELINGS
     Feeling prev_feeling {"Hello, World!"};
 #endif
     //std::string prev_state;
-    int prev_state;
+    SPOTriplet prev_state;
 
     double prev_reward { -std::numeric_limits<double>::max() };
 
@@ -1436,3 +1454,4 @@ private:
 };
 
 #endif
+
