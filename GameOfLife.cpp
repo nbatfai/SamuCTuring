@@ -91,11 +91,15 @@ GameOfLife::GameOfLife ( int w, int h ) : m_w ( w ), m_h ( h )
 
 // tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8 );
 // tm = new TuringMachine<5> ( 9, 0, 16, 1, 14, 2, 18, 3, 11, 4, 27, 5, 29, 7, 27, 8, 21, 9, 12); //9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );//9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );
-// tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );//9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );
-//tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0 ); // Marxen-Buntrock, 4097
+
+	
+	
+	
+//tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );// 314
+tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0 ); // Marxen-Buntrock, 4097
 //tm = new TuringMachine<5> ( 9, 0, 11, 2, 15, 3, 17, 4, 26, 5, 18, 6, 15, 7, 6, 8, 23, 9, 5 );// Uhing, 1471
- //tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 0, 3, 18, 4, 3, 6, 9, 7, 29, 8, 20, 9, 8 );// Uhing, 1915
-	tm = new TuringMachine<5> ( 9, 0, 11, 1, 12, 2, 17, 3, 23, 4, 3, 5, 8, 6, 26, 8, 15, 9, 5 );// Schult, 501
+//tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 0, 3, 18, 4, 3, 6, 9, 7, 29, 8, 20, 9, 8 );// Uhing, 1915
+//	tm = new TuringMachine<5> ( 9, 0, 11, 1, 12, 2, 17, 3, 23, 4, 3, 5, 8, 6, 26, 8, 15, 9, 5 );// Schult, 501
 }
 
 GameOfLife::~GameOfLife()
@@ -127,7 +131,7 @@ void GameOfLife::run()
 
         int **fp, **fr;
 
-        tm->restart_step_by_step();
+        //tm->restart_step_by_step();
 
         while ( true ) {
                 //QThread::msleep ( m_delay );

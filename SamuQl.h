@@ -1383,7 +1383,7 @@ private:
         }
     }
 */
-    int N_e = 30;
+    int N_e = 0;
 
     QL ( const QL & );
     QL & operator= ( const QL & );
