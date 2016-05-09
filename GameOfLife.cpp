@@ -101,7 +101,9 @@ GameOfLife::GameOfLife ( int w, int h ) : m_w ( w ), m_h ( h )
 //tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 0, 3, 18, 4, 3, 6, 9, 7, 29, 8, 20, 9, 8 );// Uhing, 1915
 //tm = new TuringMachine<5> ( 9, 0, 11, 1, 12, 2, 17, 3, 23, 4, 3, 5, 8, 6, 26, 8, 15, 9, 5 );// Schult, 501
 //tm = new TuringMachine<5> ( 9, 0, 9, 1, 12, 2, 15, 3, 21, 4, 29, 5, 1, 7, 24, 8, 2, 9, 27 );// 160
-tm = new TuringMachine<5> ( 9, 0, 21, 1, 9, 2, 24, 3, 6, 4, 3, 5, 20, 6, 17, 7, 0, 9, 15 );// 32
+//tm = new TuringMachine<5> ( 9, 0, 21, 1, 9, 2, 24, 3, 6, 4, 3, 5, 20, 6, 17, 7, 0, 9, 15 );// 32
+//tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8 );// 26
+tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12 );// 21
 
 }
 
@@ -158,6 +160,9 @@ void GameOfLife::run()
                         //emit cellsChanged ( lattices[latticeIndex], predictions, fp, fr );
 
 //          std::cout  << ">>>" << m_time << ">>>"<< std::endl;
+
+if(m_time >525)
+  exit(1);
 
                 }
         }
