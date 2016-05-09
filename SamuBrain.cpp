@@ -458,7 +458,8 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
         //std::string tm314 ( "9, 0, 11, 2, 15, 3, 17, 4, 26, 5, 18, 6, 15, 7, 6, 8, 23, 9, 5" );
         //std::string tm314 ( "9, 0, 11, 1, 15, 2, 0, 3, 18, 4, 3, 6, 9, 7, 29, 8, 20, 9, 8" );
 	//std::string tm314 ( "9, 0, 11, 1, 12, 2, 17, 3, 23, 4, 3, 5, 8, 6, 26, 8, 15, 9, 5");
-        std::string tm314 ( "9, 0, 9, 1, 12, 2, 15, 3, 21, 4, 29, 5, 1, 7, 24, 8, 2, 9, 27");
+        //std::string tm314 ( "9, 0, 9, 1, 12, 2, 15, 3, 21, 4, 29, 5, 1, 7, 24, 8, 2, 9, 27");
+	std::string tm314 ( "9, 0, 21, 1, 9, 2, 24, 3, 6, 4, 3, 5, 20, 6, 17, 7, 0, 9, 15");
 
         std::size_t found = pm.find ( tm314 );
         if ( found!=std::string::npos ) {
