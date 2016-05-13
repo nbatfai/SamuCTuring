@@ -445,10 +445,10 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
                 prev[r][c] = center_of_tape[c]; // /*predictions[r][c] =*/ response;
         }
 
-        std::cout  << "*TM: " << samuQl[r][c].printRules().c_str() << std::endl;
-        std::cout  << "*TM: (sort) " << samuQl[r][c].printSortedRules().c_str() << std::endl;
+        std::cout  << "\nP> *TM: " << samuQl[r][c].printRules().c_str() << std::endl;
+        std::cout  << "P> **TM: (sort) " << samuQl[r][c].printSortedRules().c_str() << std::endl;
         std::string pm = samuQl[r][c].printMachines();
-        std::cout  << "**TM: " << pm.c_str() << std::endl;
+        std::cout  << "P> ***TM: " << pm.c_str() << std::endl;
 
 //	   std::string tm314 ("9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0");
 //
@@ -459,9 +459,10 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
         //std::string tm314 ( "9, 0, 11, 1, 15, 2, 0, 3, 18, 4, 3, 6, 9, 7, 29, 8, 20, 9, 8" );
 	//std::string tm314 ( "9, 0, 11, 1, 12, 2, 17, 3, 23, 4, 3, 5, 8, 6, 26, 8, 15, 9, 5");
         //std::string tm314 ( "9, 0, 9, 1, 12, 2, 15, 3, 21, 4, 29, 5, 1, 7, 24, 8, 2, 9, 27");
-	//std::string tm314 ( "9, 0, 21, 1, 9, 2, 24, 3, 6, 4, 3, 5, 20, 6, 17, 7, 0, 9, 15");
-	//std::string tm314 ( "9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8");
-	std::string tm314 ( "9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12");
+	std::string tm314 ( "9, 0, 21, 1, 9, 2, 24, 3, 6, 4, 3, 5, 20, 6, 17, 7, 0, 9, 15");
+
+	//std::string tm314 ( "9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8");	
+	//std::string tm314 ( "9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12");
 	
         std::size_t found = pm.find ( tm314 );
         if ( found!=std::string::npos ) {

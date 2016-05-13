@@ -953,7 +953,7 @@ public:
     double alpha ( int n ) {
 
         return ( ( double ) n ) / ( ( ( double ) n ) + 100.0 );
-
+        
     }
 
     void clearn ( void ) {

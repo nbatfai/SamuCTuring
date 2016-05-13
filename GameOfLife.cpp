@@ -51,501 +51,503 @@
 
 #include "GameOfLife.h"
 
-GameOfLife::GameOfLife ( int w, int h ) : m_w ( w ), m_h ( h )
+GameOfLife::GameOfLife(int w, int h) : m_w(w), m_h(h)
 {
 
-        lattices = new int**[2];
+    lattices = new int **[2];
 
-        lattices[0] = new int*[m_h];
-        for ( int i {0}; i<m_h; ++i ) {
-                lattices[0][i] = new int [m_w];
+    lattices[0] = new int*[m_h];
+    for (int i {0}; i < m_h; ++i) {
+        lattices[0][i] = new int [m_w];
+    }
+
+    lattices[1] = new int*[m_h];
+
+    for (int i {0}; i < m_h; ++i) {
+        lattices[1][i] = new int [m_w];
+    }
+
+    predictions = new int*[m_h];
+
+    for (int i {0}; i < m_h; ++i) {
+        predictions[i] = new int [m_w];
+    }
+
+    latticeIndex = 0;
+
+    int **lattice = lattices[latticeIndex];
+
+    for (int i {0}; i < m_h; ++i)
+        for (int j {0}; j < m_w; ++j) {
+            lattice[i][j] = predictions[i][j] = 0;
         }
 
-        lattices[1] = new int*[m_h];
+    samuBrain = new SamuBrain(m_w, m_h);
 
-        for ( int i {0}; i<m_h; ++i ) {
-                lattices[1][i] = new int [m_w];
-        }
-
-        predictions = new int*[m_h];
-
-        for ( int i {0}; i<m_h; ++i ) {
-                predictions[i] = new int [m_w];
-        }
-
-        latticeIndex = 0;
-
-        int ** lattice = lattices[latticeIndex];
-
-        for ( int i {0}; i<m_h; ++i )
-                for ( int j {0}; j<m_w; ++j ) {
-                        lattice[i][j] = predictions[i][j] = 0;
-                }
-
-        samuBrain = new SamuBrain ( m_w, m_h );
-
-        carx = 0;
-        manx = m_w/2;
-        housex = 2*m_w/5;
+    carx = 0;
+    manx = m_w / 2;
+    housex = 2 * m_w / 5;
 
 
 // tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8 );
 // tm = new TuringMachine<5> ( 9, 0, 16, 1, 14, 2, 18, 3, 11, 4, 27, 5, 29, 7, 27, 8, 21, 9, 12); //9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );//9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );
 
-	
-	
-	
+
+
+
 //tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );// 314 (14)
 //tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0 ); // Marxen-Buntrock, 4097
 //tm = new TuringMachine<5> ( 9, 0, 11, 2, 15, 3, 17, 4, 26, 5, 18, 6, 15, 7, 6, 8, 23, 9, 5 );// Uhing, 1471
 //tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 0, 3, 18, 4, 3, 6, 9, 7, 29, 8, 20, 9, 8 );// Uhing, 1915
 //tm = new TuringMachine<5> ( 9, 0, 11, 1, 12, 2, 17, 3, 23, 4, 3, 5, 8, 6, 26, 8, 15, 9, 5 );// Schult, 501
 //tm = new TuringMachine<5> ( 9, 0, 9, 1, 12, 2, 15, 3, 21, 4, 29, 5, 1, 7, 24, 8, 2, 9, 27 );// 160
-//tm = new TuringMachine<5> ( 9, 0, 21, 1, 9, 2, 24, 3, 6, 4, 3, 5, 20, 6, 17, 7, 0, 9, 15 );// 32
-//tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8 );// 26
-tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12 );// 21
+tm = new TuringMachine<5> ( 9, 0, 21, 1, 9, 2, 24, 3, 6, 4, 3, 5, 20, 6, 17, 7, 0, 9, 15 );// 32
+
+    //tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8 );// 26
+//    tm = new TuringMachine<5> (9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12);   // 21
 
 }
 
 GameOfLife::~GameOfLife()
 {
-        for ( int i {0}; i<m_h; ++i ) {
-                delete[] lattices[0][i];
-                delete[] lattices[1][i];
-                delete[] predictions[i];
-        }
+    for (int i {0}; i < m_h; ++i) {
+        delete[] lattices[0][i];
+        delete[] lattices[1][i];
+        delete[] predictions[i];
+    }
 
-        delete[] predictions;
-        delete[] lattices[0];
-        delete[] lattices[1];
-        delete[] lattices;
+    delete[] predictions;
+    delete[] lattices[0];
+    delete[] lattices[1];
+    delete[] lattices;
 
-        delete samuBrain;
+    delete samuBrain;
 
-        delete tm;
+    delete tm;
 }
 
 
-int ** GameOfLife::lattice()
+int **GameOfLife::lattice()
 {
-        return lattices[latticeIndex];
+    return lattices[latticeIndex];
 }
 
 void GameOfLife::run()
 {
 
-        int **fp, **fr;
+    int **fp, **fr;
 
-        //tm->restart_step_by_step();
+    //tm->restart_step_by_step();
 
-        while ( true ) {
-                //QThread::msleep ( m_delay );
+    while (true) {
+        //QThread::msleep ( m_delay );
 
-                if ( !paused ) {
+        if (!paused) {
 
-                        ++m_time;
+            ++m_time;
 
-                        std::cout << "<<<" << m_time << "<<<"<< std::endl;
+            std::cout << "<<<" << m_time << "<<<" << std::endl;
 
-                        development();
+            development();
 
-                        //if ( samuBrain )
-                        //{
-                        samuBrain->learning ( lattices[latticeIndex], center_of_tape, 10, predictions, &fp, &fr );
-                        /*std::cout << m_time
-                                 << "   #MPUs:" << samuBrain->nofMPUs()
-                                 << "Observation (MPU):" << samuBrain->get_foobar().c_str()<< std::endl;*/
-                        //}
+            //if ( samuBrain )
+            //{
+            samuBrain->learning(lattices[latticeIndex], center_of_tape, 10, predictions, &fp, &fr);
+            /*std::cout << m_time
+                     << "   #MPUs:" << samuBrain->nofMPUs()
+                     << "Observation (MPU):" << samuBrain->get_foobar().c_str()<< std::endl;*/
+            //}
 
-                        //emit cellsChanged ( lattices[latticeIndex], predictions, fp, fr );
+            //emit cellsChanged ( lattices[latticeIndex], predictions, fp, fr );
 
 //          std::cout  << ">>>" << m_time << ">>>"<< std::endl;
 
-if(m_time >525)
-  exit(1);
-
-                }
+            /*
+            if(m_time >525)
+              exit(1);
+            */
         }
+    }
 
 }
 
 void GameOfLife::pause()
 {
-        paused = !paused;
+    paused = !paused;
 }
 
-int GameOfLife::numberOfNeighbors ( int **lattice, int r, int c, int state )
+int GameOfLife::numberOfNeighbors(int **lattice, int r, int c, int state)
 {
-        int number {0};
+    int number {0};
 
-        for ( int i {-1}; i<2; ++i )
-                for ( int j {-1}; j<2; ++j )
+    for (int i { -1}; i < 2; ++i)
+        for (int j { -1}; j < 2; ++j)
 
-                        if ( ! ( ( i==0 ) && ( j==0 ) ) ) {
-                                int o = c + j;
-                                if ( o < 0 ) {
-                                        o = m_w-1;
-                                } else if ( o >= m_w ) {
-                                        o = 0;
-                                }
-
-                                int s = r + i;
-                                if ( s < 0 ) {
-                                        s = m_h-1;
-                                } else if ( s >= m_h ) {
-                                        s = 0;
-                                }
-
-                                if ( lattice[s][o] == state ) {
-                                        ++number;
-                                }
-                        }
-
-        return number;
-}
-
-
-void GameOfLife::clear_lattice ( int **nextLattice )
-{
-        for ( int i {0}; i<m_h; ++i )
-                for ( int j {0}; j<m_w; ++j ) {
-                        nextLattice[i][j] = 0;
+            if (!((i == 0) && (j == 0))) {
+                int o = c + j;
+                if (o < 0) {
+                    o = m_w - 1;
+                } else if (o >= m_w) {
+                    o = 0;
                 }
-}
 
-void GameOfLife::fill_lattice ( int **nextLattice, int color )
-{
-        for ( int i {0}; i<m_h; ++i )
-                for ( int j {0}; j<m_w; ++j ) {
-                        nextLattice[i][j] = color;
+                int s = r + i;
+                if (s < 0) {
+                    s = m_h - 1;
+                } else if (s >= m_h) {
+                    s = 0;
                 }
-}
 
-void GameOfLife::control_Conway ( int **prevLattice, int **nextLattice )
-{
-        for ( int i {0}; i<m_h; ++i )
-
-                for ( int j {0}; j<m_w; ++j ) {
-
-                        int liveNeighbors = numberOfNeighbors ( prevLattice, i, j, true );
-
-                        if ( prevLattice[i][j] == true ) {
-                                if ( liveNeighbors==2 || liveNeighbors==3 ) {
-                                        nextLattice[i][j] = true;
-                                } else {
-                                        nextLattice[i][j] = false;
-                                }
-                        } else {
-                                if ( liveNeighbors==3 ) {
-                                        nextLattice[i][j] = true;
-                                } else {
-                                        nextLattice[i][j] = false;
-                                }
-                        }
+                if (lattice[s][o] == state) {
+                    ++number;
                 }
+            }
+
+    return number;
 }
 
-void GameOfLife::control_Movie ( int **nextLattice )
+
+void GameOfLife::clear_lattice(int **nextLattice)
 {
-        control_Movie ( nextLattice, 0 );
+    for (int i {0}; i < m_h; ++i)
+        for (int j {0}; j < m_w; ++j) {
+            nextLattice[i][j] = 0;
+        }
 }
 
-
-void GameOfLife::control_Movie ( int **nextLattice, int mode )
+void GameOfLife::fill_lattice(int **nextLattice, int color)
 {
-        if ( m_time %3 ==0 ) {
+    for (int i {0}; i < m_h; ++i)
+        for (int j {0}; j < m_w; ++j) {
+            nextLattice[i][j] = color;
+        }
+}
 
-                if ( carx < m_w-5 ) {
-                        carx += 2;
+void GameOfLife::control_Conway(int **prevLattice, int **nextLattice)
+{
+    for (int i {0}; i < m_h; ++i)
+
+        for (int j {0}; j < m_w; ++j) {
+
+            int liveNeighbors = numberOfNeighbors(prevLattice, i, j, true);
+
+            if (prevLattice[i][j] == true) {
+                if (liveNeighbors == 2 || liveNeighbors == 3) {
+                    nextLattice[i][j] = true;
                 } else {
-                        carx = 0;
+                    nextLattice[i][j] = false;
                 }
-        }
-
-        if ( m_time %6 ==0 ) {
-                if ( manx < m_w-3 ) {
-                        ++manx;
+            } else {
+                if (liveNeighbors == 3) {
+                    nextLattice[i][j] = true;
                 } else {
-                        manx = 0;
+                    nextLattice[i][j] = false;
                 }
+            }
         }
+}
 
-        if ( mode == 1 ) {
-                house ( nextLattice, housex, 3*m_h/5 -6 );
-        } else if ( mode == 2 ) {
-                car ( nextLattice, carx, 3*m_h/5 +1 );
-        } else if ( mode == 3 ) {
-                man ( nextLattice, manx, 3*m_h/5-1 );
+void GameOfLife::control_Movie(int **nextLattice)
+{
+    control_Movie(nextLattice, 0);
+}
+
+
+void GameOfLife::control_Movie(int **nextLattice, int mode)
+{
+    if (m_time % 3 == 0) {
+
+        if (carx < m_w - 5) {
+            carx += 2;
         } else {
-                house ( nextLattice, housex, 3*m_h/5 -6 );
-                car ( nextLattice, carx, 3*m_h/5 +1 );
-                man ( nextLattice, manx, 3*m_h/5-1 );
+            carx = 0;
         }
+    }
+
+    if (m_time % 6 == 0) {
+        if (manx < m_w - 3) {
+            ++manx;
+        } else {
+            manx = 0;
+        }
+    }
+
+    if (mode == 1) {
+        house(nextLattice, housex, 3 * m_h / 5 - 6);
+    } else if (mode == 2) {
+        car(nextLattice, carx, 3 * m_h / 5 + 1);
+    } else if (mode == 3) {
+        man(nextLattice, manx, 3 * m_h / 5 - 1);
+    } else {
+        house(nextLattice, housex, 3 * m_h / 5 - 6);
+        car(nextLattice, carx, 3 * m_h / 5 + 1);
+        man(nextLattice, manx, 3 * m_h / 5 - 1);
+    }
 
 }
 
-void GameOfLife::control_Stroop ( int **nextLattice )
+void GameOfLife::control_Stroop(int **nextLattice)
 {
-        if ( ++age <20 ) {
-                red ( nextLattice, 2, 5, 1 );
-        } else if ( age <40 ) {
-                green ( nextLattice, 2, 5, 1 );
-        } else if ( age <60 ) {
-                blue ( nextLattice, 2, 5, 1 );
-        } else if ( age <80 ) {
-                red ( nextLattice, 2, 5, 2 );
-        } else if ( age <100 ) {
-                green ( nextLattice, 2, 5, 2 );
-        } else if ( age <120 ) {
-                blue ( nextLattice, 2, 5, 2 );
-        } else if ( age <140 ) {
-                red ( nextLattice, 2, 5, 3 );
-        } else if ( age <160 ) {
-                green ( nextLattice, 2, 5, 3 );
-        } else if ( age <180 ) {
-                blue ( nextLattice, 2, 5, 3 );
-        } else {
-                age =0;
-                red ( nextLattice, 2, 5, 2 );
-        }
+    if (++age < 20) {
+        red(nextLattice, 2, 5, 1);
+    } else if (age < 40) {
+        green(nextLattice, 2, 5, 1);
+    } else if (age < 60) {
+        blue(nextLattice, 2, 5, 1);
+    } else if (age < 80) {
+        red(nextLattice, 2, 5, 2);
+    } else if (age < 100) {
+        green(nextLattice, 2, 5, 2);
+    } else if (age < 120) {
+        blue(nextLattice, 2, 5, 2);
+    } else if (age < 140) {
+        red(nextLattice, 2, 5, 3);
+    } else if (age < 160) {
+        green(nextLattice, 2, 5, 3);
+    } else if (age < 180) {
+        blue(nextLattice, 2, 5, 3);
+    } else {
+        age = 0;
+        red(nextLattice, 2, 5, 2);
+    }
 
 }
 
 void GameOfLife::development()
 {
 
-        //int **prevLattice = lattices[latticeIndex];
-        int **nextLattice = lattices[latticeIndex];//lattices[ ( latticeIndex+1 ) %2];
+    //int **prevLattice = lattices[latticeIndex];
+    int **nextLattice = lattices[latticeIndex];//lattices[ ( latticeIndex+1 ) %2];
 
-        clear_lattice ( nextLattice );
-
-
-        int res = tm->step_by_step ( center_of_tape, 10 );
+    clear_lattice(nextLattice);
 
 
-        for ( int i {0}; i<2*10+1; ++i ) {
-
-                if ( i != 10 ) {
-                        nextLattice[0][i] = center_of_tape[i];
-                } else {
-                        nextLattice[0][i] = 100*center_of_tape[i]+res;
-                }
+    int res = tm->step_by_step(center_of_tape, 10);
 
 
-                /*
-                if(i != 10)
-                  predictions[0][i] = nextLattice[0][i];
-                */
+    for (int i {0}; i < 2 * 10 + 1; ++i) {
+
+        if (i != 10) {
+            nextLattice[0][i] = center_of_tape[i];
+        } else {
+            nextLattice[0][i] = 100 * center_of_tape[i] + res;
         }
 
-        if ( res == -1 ) {
-                tm->restart_step_by_step();
-        }
 
         /*
-          if ( m_time < 3000 )
-            {
-              control_Movie ( nextLattice, 1 );
-        //      control_Conway ( prevLattice, nextLattice );
-            }
-          else if ( m_time < 6000 )
-            {
-              control_Movie ( nextLattice, 2 );
-        //      control_Stroop ( nextLattice );
-            }
-          else if ( m_time < 10000 )
-            {
-              control_Movie ( nextLattice, 3 );
-            }
-          else if ( m_time < 16000 )
-            {
-              control_Movie ( nextLattice );
-            }
-          else
-            {
-              m_time = -1;
-            }
+        if(i != 10)
+          predictions[0][i] = nextLattice[0][i];
         */
-        /*if ( m_time < 7000 )
-          {
-            control_Movie ( nextLattice);
-        //      control_Conway ( prevLattice, nextLattice );
-          }
-        else if ( m_time < 10000 )
-          {
-            control_Movie ( nextLattice, 1 );
-        //      control_Stroop ( nextLattice );
-          }
-        else
-          {
-            m_time = -1;
-          }
-        */
+    }
 
-}
+    if (res == -1) {
+        tm->restart_step_by_step();
+    }
 
-void GameOfLife::red ( int **lattice, int x, int y, int color )
-{
-
-        int r[7][17] = {
-                {1,1,1,0,0,0,1,1,1,1,1,0,1,1,1,0,0},
-                {1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,1,0},
-                {1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,1},
-                {1,1,1,0,0,0,1,1,1,1,0,0,1,0,0,0,1},
-                {1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1},
-                {1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,1,0},
-                {1,0,0,0,1,0,1,1,1,1,1,0,1,1,1,0,0}
-        };
-
-        for ( int i {0}; i<7; ++i ) {
-                for ( int j {0}; j<17; ++j ) {
-                        if ( r[i][j] ) {
-                                lattice[y+i][x+j] = r[i][j]*color;
-                        }
-                }
-
+    /*
+      if ( m_time < 3000 )
+        {
+          control_Movie ( nextLattice, 1 );
+    //      control_Conway ( prevLattice, nextLattice );
         }
-}
-
-void GameOfLife::green ( int **lattice, int x, int y, int color )
-{
-
-        int r[7][29] = {
-                {0,1,1,1,0,0,1,1,1,0,0,0,1,1,1,1,1,0,1,1,1,1,1,0,1,0,0,0,1},
-                {1,0,0,0,1,0,1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,1,0,0,1},
-                {1,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,1,1,0,1},
-                {1,0,1,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,0,1,0,1},
-                {1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,1,1,1},
-                {1,0,0,0,1,0,1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,1},
-                {0,1,1,1,0,0,1,0,0,0,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,0,0,0,1}
-        };
-
-        for ( int i {0}; i<7; ++i ) {
-                for ( int j {0}; j<29; ++j ) {
-
-                        if ( r[i][j] ) {
-                                lattice[y+i][x+j] = r[i][j]*color;
-                        }
-                }
-
+      else if ( m_time < 6000 )
+        {
+          control_Movie ( nextLattice, 2 );
+    //      control_Stroop ( nextLattice );
         }
-}
-
-void GameOfLife::blue ( int **lattice, int x, int y, int color )
-{
-
-        int r[7][21] = {
-                {1,1,1,0,0,1,0,0,0,0,1,0,0,0,1,0,1,1,1,1,1},
-                {1,0,0,1,0,1,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0},
-                {1,0,0,1,0,1,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0},
-                {1,1,1,0,0,1,0,0,0,0,1,0,0,0,1,0,1,1,1,1,0},
-                {1,0,0,1,0,1,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0},
-                {1,0,0,1,0,1,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0},
-                {1,1,1,0,0,1,1,1,1,0,0,1,1,1,0,0,1,1,1,1,1}
-
-        };
-
-        for ( int i {0}; i<7; ++i ) {
-                for ( int j {0}; j<21; ++j ) {
-                        if ( r[i][j] ) {
-                                lattice[y+i][x+j] = r[i][j]*color;
-                        }
-                }
-
+      else if ( m_time < 10000 )
+        {
+          control_Movie ( nextLattice, 3 );
         }
-}
-
-void GameOfLife::glider ( int **lattice, int x, int y )
-{
-
-        lattice[y+0][x+2] = 1;
-        lattice[y+1][x+1] = 1;
-        lattice[y+2][x+1] = 1;
-        lattice[y+2][x+2] = 1;
-        lattice[y+2][x+3] = 1;
-
-}
-
-void GameOfLife::house ( int **lattice, int x, int y )
-{
-
-        lattice[y+0][x+3] = 1;
-
-        lattice[y+1][x+2] = 1;
-        lattice[y+1][x+4] = 1;
-
-        lattice[y+2][x+1] = 1;
-        lattice[y+2][x+5] = 1;
-
-        lattice[y+3][x+0] = 1;
-        lattice[y+3][x+6] = 1;
-
-        lattice[y+4][x+0] = 1;
-        lattice[y+4][x+6] = 1;
-
-        lattice[y+5][x+0] = 1;
-        lattice[y+5][x+6] = 1;
-
-        lattice[y+6][x+0] = 1;
-        lattice[y+6][x+6] = 1;
-
-        lattice[y+7][x+0] = 1;
-        lattice[y+7][x+6] = 1;
-
-        lattice[y+8][x+0] = 1;
-        lattice[y+8][x+1] = 1;
-        lattice[y+8][x+2] = 1;
-        lattice[y+8][x+3] = 1;
-        lattice[y+8][x+4] = 1;
-        lattice[y+8][x+5] = 1;
-        lattice[y+8][x+6] = 1;
-}
-
-void GameOfLife::man ( int **lattice, int x, int y )
-{
-
-        lattice[y+0][x+1] = 1;
-
-        lattice[y+1][x+0] = 1;
-        lattice[y+1][x+1] = 1;
-        lattice[y+1][x+2] = 1;
-
-        lattice[y+2][x+1] = 1;
-
-        lattice[y+3][x+0] = 1;
-        lattice[y+3][x+2] = 1;
+      else if ( m_time < 16000 )
+        {
+          control_Movie ( nextLattice );
+        }
+      else
+        {
+          m_time = -1;
+        }
+    */
+    /*if ( m_time < 7000 )
+      {
+        control_Movie ( nextLattice);
+    //      control_Conway ( prevLattice, nextLattice );
+      }
+    else if ( m_time < 10000 )
+      {
+        control_Movie ( nextLattice, 1 );
+    //      control_Stroop ( nextLattice );
+      }
+    else
+      {
+        m_time = -1;
+      }
+    */
 
 }
 
-void GameOfLife::car ( int **lattice, int x, int y )
+void GameOfLife::red(int **lattice, int x, int y, int color)
 {
 
-        lattice[y+0][x+1] = 1;
-        lattice[y+0][x+2] = 1;
-        lattice[y+0][x+3] = 1;
+    int r[7][17] = {
+        {1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0},
+        {1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0},
+        {1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
+        {1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1},
+        {1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
+        {1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0},
+        {1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0}
+    };
 
-        lattice[y+1][x+0] = 1;
-        lattice[y+1][x+1] = 1;
-        lattice[y+1][x+2] = 1;
-        lattice[y+1][x+3] = 1;
-        lattice[y+1][x+4] = 1;
+    for (int i {0}; i < 7; ++i) {
+        for (int j {0}; j < 17; ++j) {
+            if (r[i][j]) {
+                lattice[y + i][x + j] = r[i][j] * color;
+            }
+        }
 
-        lattice[y+2][x+1] = 1;
-        lattice[y+2][x+3] = 1;
+    }
+}
+
+void GameOfLife::green(int **lattice, int x, int y, int color)
+{
+
+    int r[7][29] = {
+        {0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1},
+        {1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1},
+        {1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1},
+        {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1},
+        {1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1},
+        {0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1}
+    };
+
+    for (int i {0}; i < 7; ++i) {
+        for (int j {0}; j < 29; ++j) {
+
+            if (r[i][j]) {
+                lattice[y + i][x + j] = r[i][j] * color;
+            }
+        }
+
+    }
+}
+
+void GameOfLife::blue(int **lattice, int x, int y, int color)
+{
+
+    int r[7][21] = {
+        {1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1},
+        {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
+        {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
+        {1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0},
+        {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
+        {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
+        {1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1}
+
+    };
+
+    for (int i {0}; i < 7; ++i) {
+        for (int j {0}; j < 21; ++j) {
+            if (r[i][j]) {
+                lattice[y + i][x + j] = r[i][j] * color;
+            }
+        }
+
+    }
+}
+
+void GameOfLife::glider(int **lattice, int x, int y)
+{
+
+    lattice[y + 0][x + 2] = 1;
+    lattice[y + 1][x + 1] = 1;
+    lattice[y + 2][x + 1] = 1;
+    lattice[y + 2][x + 2] = 1;
+    lattice[y + 2][x + 3] = 1;
+
+}
+
+void GameOfLife::house(int **lattice, int x, int y)
+{
+
+    lattice[y + 0][x + 3] = 1;
+
+    lattice[y + 1][x + 2] = 1;
+    lattice[y + 1][x + 4] = 1;
+
+    lattice[y + 2][x + 1] = 1;
+    lattice[y + 2][x + 5] = 1;
+
+    lattice[y + 3][x + 0] = 1;
+    lattice[y + 3][x + 6] = 1;
+
+    lattice[y + 4][x + 0] = 1;
+    lattice[y + 4][x + 6] = 1;
+
+    lattice[y + 5][x + 0] = 1;
+    lattice[y + 5][x + 6] = 1;
+
+    lattice[y + 6][x + 0] = 1;
+    lattice[y + 6][x + 6] = 1;
+
+    lattice[y + 7][x + 0] = 1;
+    lattice[y + 7][x + 6] = 1;
+
+    lattice[y + 8][x + 0] = 1;
+    lattice[y + 8][x + 1] = 1;
+    lattice[y + 8][x + 2] = 1;
+    lattice[y + 8][x + 3] = 1;
+    lattice[y + 8][x + 4] = 1;
+    lattice[y + 8][x + 5] = 1;
+    lattice[y + 8][x + 6] = 1;
+}
+
+void GameOfLife::man(int **lattice, int x, int y)
+{
+
+    lattice[y + 0][x + 1] = 1;
+
+    lattice[y + 1][x + 0] = 1;
+    lattice[y + 1][x + 1] = 1;
+    lattice[y + 1][x + 2] = 1;
+
+    lattice[y + 2][x + 1] = 1;
+
+    lattice[y + 3][x + 0] = 1;
+    lattice[y + 3][x + 2] = 1;
+
+}
+
+void GameOfLife::car(int **lattice, int x, int y)
+{
+
+    lattice[y + 0][x + 1] = 1;
+    lattice[y + 0][x + 2] = 1;
+    lattice[y + 0][x + 3] = 1;
+
+    lattice[y + 1][x + 0] = 1;
+    lattice[y + 1][x + 1] = 1;
+    lattice[y + 1][x + 2] = 1;
+    lattice[y + 1][x + 3] = 1;
+    lattice[y + 1][x + 4] = 1;
+
+    lattice[y + 2][x + 1] = 1;
+    lattice[y + 2][x + 3] = 1;
 
 }
 
 int GameOfLife::getW() const
 {
-        return m_w;
+    return m_w;
 }
 int GameOfLife::getH() const
 {
-        return m_h;
+    return m_h;
 }
 long GameOfLife::getT() const
 {
-        return m_time;
+    return m_time;
 }
 
 

@@ -7,7 +7,9 @@ main ()
   //14 314
   // TuringMachine<5> tm ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );
 
-  {TuringMachine<5> tm ( 9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
+  {TuringMachine<5> tm ( 8, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
+  
+  //{TuringMachine<5> tm ( 9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
   
 //{TuringMachine<5> tm ( 9, 0, 11, 1, 12, 2, 17, 3, 23, 4, 3, 5, 8, 6, 26, 8, 15, 9, 5);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
   

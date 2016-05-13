@@ -128,6 +128,7 @@ Version history
 #ifdef DEBUG_IDIM
 #include <cmath>
 #endif
+#include <utility>
 
 template <int M>
 class TransitionRules
@@ -323,6 +324,9 @@ public:
   bool states[M] = {false, false, false};
 #endif
 
+        std::map<std::pair<int, int>, int> ruleStat;
+  
+  
   TuringMachine () {}
 
   TuringMachine ( int nof, ... );
@@ -718,6 +722,19 @@ template <int M> int TuringMachine< M >::step_by_step ( int *center_of_tape , in
   //  {
 
   toi = astep[state * 2 + tape.get_tape ( tape.tapei )];
+    /*
+std::pair<int, int> p {state * 2 + tape.get_tape ( tape.tapei ), toi};  
+  ++ruleStat[p];
+  */
+  ++ruleStat[std::make_pair(state * 2 + tape.get_tape ( tape.tapei ), toi)];
+  
+  std::cout << "R> " << ruleStat.size() ;
+          for ( auto& rule : ruleStat ) {
+	               std::cout << ", " <<rule.first.first <<"->"  << rule.first.second << "(" << rule.second<< ") ";
+ 
+	  }
+
+  
   if ( toi >= 0 )
     {
       state = rules.to[toi][0];
@@ -753,6 +770,12 @@ template <int M> int TuringMachine< M >::step_by_step ( int *center_of_tape , in
 
 template <int M> TuringMachine< M >::TuringMachine ( int nof, ... ) :nof ( nof )
 {
+
+      std::cout 
+      << "Tape: " 
+      << (((double)NOF_CELLS/1024.0) / 1024.0) / 1024.0 
+      << " GiB";
+    
 
 #ifdef STATES_OM3
   for ( int i ( 0 ); i < M; ++i )
