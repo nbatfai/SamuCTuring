@@ -385,8 +385,8 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
 
         //SPOTriplet response = samuQl[r][c] ( reality[r][c], center_of_tape, noc, /*prg,*/ isLearning == 0 );
 
-        auto state = std::make_tuple ( reality[r][noc-2],reality[r][noc-1],
-                                       reality[r][noc],reality[r][noc+1], reality[r][noc+2] );
+        auto state = std::make_tuple ( reality[r][noc-3], reality[r][noc-2],reality[r][noc-1],
+                                       reality[r][noc],reality[r][noc+1], reality[r][noc+2], reality[r][noc+3] );
 
         SPOTriplet response = samuQl[r][c] ( state, center_of_tape, noc, /*prg,*/ isLearning == 0 );
 
