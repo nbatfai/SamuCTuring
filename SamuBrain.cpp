@@ -56,6 +56,8 @@ SamuBrain::SamuBrain ( int w, int h ) : m_w ( w ), m_h ( h )
         m_morgan = newMPU();
 
         m_searching = false;
+	
+	config.reserve(100);
 }
 
 SamuBrain::~SamuBrain()
@@ -389,10 +391,17 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
         auto state = std::make_tuple ( reality[r][noc-3], reality[r][noc-2],reality[r][noc-1],
                                        reality[r][noc],reality[r][noc+1], reality[r][noc+2], reality[r][noc+3] );
 */
+
+/*	
         auto state = std::make_tuple ( reality[r][noc-4], reality[r][noc-3], reality[r][noc-2],reality[r][noc-1],
                                        reality[r][noc],reality[r][noc+1], reality[r][noc+2], reality[r][noc+3], reality[r][noc+4] );
+*/	
+	config.clear();
+	for(int i{-4}; i<= 4; ++i)
+	  config.push_back(reality[r][noc+i]);
 	
-        SPOTriplet response = samuQl[r][c] ( state, center_of_tape, noc, /*prg,*/ isLearning == 0 );
+	
+        SPOTriplet response = samuQl[r][c] ( config, center_of_tape, noc, 4, /*prg,*/ isLearning == 0 );
 
 
 //          if ( prev[r][c] )

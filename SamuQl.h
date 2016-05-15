@@ -287,8 +287,9 @@ private:
 typedef std::string Feeling;
 #endif
 
-typedef std::tuple<int, int, int, int, int, int, int, int, int> Config5;
-typedef Config5 SPOTriplet;
+//typedef std::tuple<int, int, int, int, int, int, int, int, int> Config5;
+typedef std::vector<int> ConfigN;
+typedef ConfigN SPOTriplet;
 
 //typedef int SPOTriplet;
 //typedef std::pair<std::string, SPOTriplet> ReinforcedAction;
@@ -829,47 +830,46 @@ public:
         center_of_tape[tapei] = tr.to[toi][1];
         tapei += ( tr.to[toi][2] - 1 );
 
-	center_of_tape[tapei] = tr.to[toi][0] + 100 * center_of_tape[tapei];
-	
-        return std::make_tuple(center_of_tape[tapei-4], center_of_tape[tapei-3], center_of_tape[tapei-2], center_of_tape[tapei-1],
-                center_of_tape[tapei],
-                center_of_tape[tapei+1], center_of_tape[tapei+2], center_of_tape[tapei+3], center_of_tape[tapei+4]);
+        center_of_tape[tapei] = tr.to[toi][0] + 100 * center_of_tape[tapei];
+        /*
+            return std::make_tuple(center_of_tape[tapei-4], center_of_tape[tapei-3], center_of_tape[tapei-2], center_of_tape[tapei-1],
+                    center_of_tape[tapei],
+                    center_of_tape[tapei+1], center_of_tape[tapei+2], center_of_tape[tapei+3], center_of_tape[tapei+4]);
+        */
+
+        SPOTriplet config;
+        config.reserve ( 100 );
+        for ( int i {-4}; i<= 4; ++i ) {
+            config.push_back ( center_of_tape[tapei+i] );
+        }
+
+        return config;
 
     }
 
     TransitionRules<5> tr;
 
-    SPOTriplet operator() ( SPOTriplet triplet, int * center_of_tape, int noc, /*std::string prg,*/ bool isLearning ) {
+    SPOTriplet operator() ( SPOTriplet triplet, int * center_of_tape, int noc, int noc2, /*std::string prg,*/ bool isLearning ) {
 
-        auto prg = std::get<4> ( triplet );
+        auto prg = triplet[noc2];
 
         // s' = triplet
         // r' = reward
 
-	
-	if(prg ==0)
-	  std::cout << " QQQ\n" 
-	  << std::get<0> ( triplet) << " " 
-	  << std::get<1> ( triplet) << " " 
-	  << std::get<2> ( triplet) << " " 
-	  << std::get<3> ( triplet) << " " 
-	  << std::get<4> ( triplet) << " " 
-	  << std::get<5> ( triplet) << " " 
-	  << std::get<6> ( triplet) << " " 
-	  << std::get<7> ( triplet) << " " 
-	  << std::get<8> ( triplet) << " \n" 
-	  
-	  << std::get<0> ( prev_action)  << " "
-	  << std::get<1> ( prev_action)  << " "
-	  << std::get<2> ( prev_action)  << " "
-	  << std::get<3> ( prev_action)  << " "
-	  << std::get<4> ( prev_action)  << " "
-	  << std::get<5> ( prev_action)  << " "
-	  << std::get<6> ( prev_action)  << " "
-	  << std::get<7> ( prev_action)  << " "
-	  << std::get<8> ( prev_action)  << " "
-	  << std::endl;
-	
+
+//        if ( prg ==0 ) {
+            std::cout << " QQQ\n";
+
+            for ( auto i:triplet ) {
+                std::cout  << i << " ";
+            }
+            std::cout << " PPP\n";
+
+            for ( auto i:prev_action ) {
+                std::cout  << i << " ";
+            }
+//        }
+
         double reward =
             //3.0*triplet.cmp ( prev_action ) - 1.5;
             ( triplet == prev_action ) ?max_reward:min_reward;
@@ -887,10 +887,10 @@ public:
         if ( triplet == prev_action ) {
 
             //reinforced_action.first = prev_state;
-            if ( std::get<4> ( prev_state ) > 50 ) {
-                reinforced_action.first = ( std::get<4> ( prev_state )-100 ) *2+1;
+            if ( prev_state[noc2] > 50 ) {
+                reinforced_action.first = ( prev_state[noc2] -100 ) *2+1;
             } else {
-                reinforced_action.first = std::get<4> ( prev_state ) *2;
+                reinforced_action.first = prev_state[noc2] *2;
             }
 
             reinforced_action.second = prev_action2;
@@ -927,7 +927,7 @@ public:
                 */
 
 
-                ++frqs[prev_action2][std::get<4> ( prev_state)];
+                ++frqs[prev_action2][prev_state[noc2]];
 
                 /*
                         for ( int i {0}; i<5*2*3; ++i ) {
@@ -937,10 +937,10 @@ public:
 
                 double max_ap_q_sp_ap = max_ap_Q_sp_ap ( prg );
 
-                table_[prev_action2][std::get<4> ( prev_state )] =
-                    table_[prev_action2][std::get<4> ( prev_state )] +
-                    alpha ( frqs[prev_action2][std::get<4> ( prev_state )] ) *
-                    ( reward + gamma * max_ap_q_sp_ap - table_[prev_action2][std::get<4> ( prev_state )] );
+                table_[prev_action2][ prev_state[noc2]] =
+                    table_[prev_action2][prev_state[noc2]] +
+                    alpha ( frqs[prev_action2][ prev_state[noc2]] ) *
+                    ( reward + gamma * max_ap_q_sp_ap - table_[prev_action2][ prev_state[noc2]] );
             }
 
             action2 = argmax_ap_f ( prg );
@@ -948,6 +948,10 @@ public:
                 action = exec ( action2, center_of_tape, noc );
             }
 
+        if ( prg ==0 ) 
+            std::cout << " YYY" << action2 <<std::endl;
+            
+            
         }
 
         //prev_state = prg; 		// s <- s'
@@ -977,7 +981,7 @@ public:
     double alpha ( int n ) {
 
         return ( ( double ) n ) / ( ( ( double ) n ) + 100.0 );
-        
+
     }
 
     void clearn ( void ) {
@@ -1383,30 +1387,30 @@ private:
     std::random_device zinit;
     std::default_random_engine zgen {zinit() };
     */
-/*
-    void debug_tree ( TripletNode * node, std::ostream & os ) {
-        if ( node != nullptr ) {
-            ++depth;
-            std::map<SPOTriplet, TripletNode*> children = node->getChildren();
+    /*
+        void debug_tree ( TripletNode * node, std::ostream & os ) {
+            if ( node != nullptr ) {
+                ++depth;
+                std::map<SPOTriplet, TripletNode*> children = node->getChildren();
 
-            for ( std::map<SPOTriplet, TripletNode*>::iterator it=children.begin(); it!=children.end(); ++it ) {
-                debug_tree ( ( *it ).second, os );
-            }
-
-            for ( int i {0}; i < depth; ++i )
-                if ( i == ( 2* ( depth-1 ) ) /2 ) {
-                    os  << depth - 1;
-                } else {
-                    os << "__";
+                for ( std::map<SPOTriplet, TripletNode*>::iterator it=children.begin(); it!=children.end(); ++it ) {
+                    debug_tree ( ( *it ).second, os );
                 }
 
-            os << "__ "
-               << node->getTriplet ()
-               << std::endl;
-            --depth;
+                for ( int i {0}; i < depth; ++i )
+                    if ( i == ( 2* ( depth-1 ) ) /2 ) {
+                        os  << depth - 1;
+                    } else {
+                        os << "__";
+                    }
+
+                os << "__ "
+                   << node->getTriplet ()
+                   << std::endl;
+                --depth;
+            }
         }
-    }
-*/
+    */
     int N_e = 3*5*2*3;
 
     QL ( const QL & );

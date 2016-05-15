@@ -173,6 +173,7 @@ class SamuBrain
 
     int newc {0};
 
+    std::vector<int> config;
 
 public:
     SamuBrain ( int w = 30, int h = 20 );

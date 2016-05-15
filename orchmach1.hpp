@@ -700,7 +700,7 @@ template <int M> void TuringMachine< M >::restart_step_by_step ()
   
   step_counter = 0;
   
-  if(counter++ > 3*M*2*3)
+  if(counter++ > 10*3*M*2*3)
   tape.rndclear ( nof_dirs[0], nof_dirs[2] );
   else
   tape.clear ( nof_dirs[0], nof_dirs[2] );
