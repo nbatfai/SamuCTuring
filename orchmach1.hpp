@@ -128,6 +128,7 @@ Version history
 #ifdef DEBUG_IDIM
 #include <cmath>
 #endif
+#include <map>
 #include <utility>
 
 template <int M>
@@ -695,9 +696,16 @@ template <int M> long TuringMachine< M >::start ( void )
 
 template <int M> void TuringMachine< M >::restart_step_by_step ()
 {
-  step_counter = 0;
-  tape.rndclear ( nof_dirs[0], nof_dirs[2] );
+  static int counter = 0;
   
+  step_counter = 0;
+  
+  if(counter++ > 3*M*2*3)
+  tape.rndclear ( nof_dirs[0], nof_dirs[2] );
+  else
+  tape.clear ( nof_dirs[0], nof_dirs[2] );
+    
+  ruleStat.clear();
 }
 
 template <int M> int TuringMachine< M >::step_by_step ( int *center_of_tape , int noc )
@@ -754,7 +762,7 @@ std::pair<int, int> p {state * 2 + tape.get_tape ( tape.tapei ), toi};
 
       // halt
       //tape.clear ( nof_dirs[0], nof_dirs[2] );
-      tape.rndclear ( nof_dirs[0], nof_dirs[2] );
+      //tape.rndclear ( nof_dirs[0], nof_dirs[2] );
       ret = -1; //nr_ones[1] - nr_ones[2];
     }
   //  }

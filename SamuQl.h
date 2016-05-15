@@ -287,7 +287,7 @@ private:
 typedef std::string Feeling;
 #endif
 
-typedef std::tuple<int, int, int, int, int, int, int> Config5;
+typedef std::tuple<int, int, int, int, int, int, int, int, int> Config5;
 typedef Config5 SPOTriplet;
 
 //typedef int SPOTriplet;
@@ -831,9 +831,9 @@ public:
 
 	center_of_tape[tapei] = tr.to[toi][0] + 100 * center_of_tape[tapei];
 	
-        return std::make_tuple(center_of_tape[tapei-3], center_of_tape[tapei-2], center_of_tape[tapei-1],
+        return std::make_tuple(center_of_tape[tapei-4], center_of_tape[tapei-3], center_of_tape[tapei-2], center_of_tape[tapei-1],
                 center_of_tape[tapei],
-                center_of_tape[tapei+1], center_of_tape[tapei+2], center_of_tape[tapei+3]);
+                center_of_tape[tapei+1], center_of_tape[tapei+2], center_of_tape[tapei+3], center_of_tape[tapei+4]);
 
     }
 
@@ -841,11 +841,35 @@ public:
 
     SPOTriplet operator() ( SPOTriplet triplet, int * center_of_tape, int noc, /*std::string prg,*/ bool isLearning ) {
 
-        auto prg = std::get<3> ( triplet );
+        auto prg = std::get<4> ( triplet );
 
         // s' = triplet
         // r' = reward
 
+	
+	if(prg ==0)
+	  std::cout << " QQQ\n" 
+	  << std::get<0> ( triplet) << " " 
+	  << std::get<1> ( triplet) << " " 
+	  << std::get<2> ( triplet) << " " 
+	  << std::get<3> ( triplet) << " " 
+	  << std::get<4> ( triplet) << " " 
+	  << std::get<5> ( triplet) << " " 
+	  << std::get<6> ( triplet) << " " 
+	  << std::get<7> ( triplet) << " " 
+	  << std::get<8> ( triplet) << " \n" 
+	  
+	  << std::get<0> ( prev_action)  << " "
+	  << std::get<1> ( prev_action)  << " "
+	  << std::get<2> ( prev_action)  << " "
+	  << std::get<3> ( prev_action)  << " "
+	  << std::get<4> ( prev_action)  << " "
+	  << std::get<5> ( prev_action)  << " "
+	  << std::get<6> ( prev_action)  << " "
+	  << std::get<7> ( prev_action)  << " "
+	  << std::get<8> ( prev_action)  << " "
+	  << std::endl;
+	
         double reward =
             //3.0*triplet.cmp ( prev_action ) - 1.5;
             ( triplet == prev_action ) ?max_reward:min_reward;
@@ -863,10 +887,10 @@ public:
         if ( triplet == prev_action ) {
 
             //reinforced_action.first = prev_state;
-            if ( std::get<3> ( prev_state ) > 50 ) {
-                reinforced_action.first = ( std::get<3> ( prev_state )-100 ) *2+1;
+            if ( std::get<4> ( prev_state ) > 50 ) {
+                reinforced_action.first = ( std::get<4> ( prev_state )-100 ) *2+1;
             } else {
-                reinforced_action.first = std::get<3> ( prev_state ) *2;
+                reinforced_action.first = std::get<4> ( prev_state ) *2;
             }
 
             reinforced_action.second = prev_action2;
@@ -903,7 +927,7 @@ public:
                 */
 
 
-                ++frqs[prev_action2][std::get<3> ( prev_state)];
+                ++frqs[prev_action2][std::get<4> ( prev_state)];
 
                 /*
                         for ( int i {0}; i<5*2*3; ++i ) {
@@ -913,10 +937,10 @@ public:
 
                 double max_ap_q_sp_ap = max_ap_Q_sp_ap ( prg );
 
-                table_[prev_action2][std::get<3> ( prev_state )] =
-                    table_[prev_action2][std::get<3> ( prev_state )] +
-                    alpha ( frqs[prev_action2][std::get<3> ( prev_state )] ) *
-                    ( reward + gamma * max_ap_q_sp_ap - table_[prev_action2][std::get<3> ( prev_state )] );
+                table_[prev_action2][std::get<4> ( prev_state )] =
+                    table_[prev_action2][std::get<4> ( prev_state )] +
+                    alpha ( frqs[prev_action2][std::get<4> ( prev_state )] ) *
+                    ( reward + gamma * max_ap_q_sp_ap - table_[prev_action2][std::get<4> ( prev_state )] );
             }
 
             action2 = argmax_ap_f ( prg );
@@ -1383,7 +1407,7 @@ private:
         }
     }
 */
-    int N_e = 0;
+    int N_e = 3*5*2*3;
 
     QL ( const QL & );
     QL & operator= ( const QL & );
