@@ -4,10 +4,25 @@
 int
 main ()
 {
+  
+{TuringMachine<5> tm (  9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}// 314 (14)
+{TuringMachine<5> tm (  9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0 );std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;} // Marxen-Buntrock, 4097
+{TuringMachine<5> tm (  9, 0, 11, 2, 15, 3, 17, 4, 26, 5, 18, 6, 15, 7, 6, 8, 23, 9, 5 );std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}// Uhing, 1471
+{TuringMachine<5> tm (  9, 0, 11, 1, 15, 2, 0, 3, 18, 4, 3, 6, 9, 7, 29, 8, 20, 9, 8 );std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}// Uhing, 1915
+{TuringMachine<5> tm (  9, 0, 11, 1, 12, 2, 17, 3, 23, 4, 3, 5, 8, 6, 26, 8, 15, 9, 5 );std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}// Schult, 501
+{TuringMachine<5> tm (  9, 0, 9, 1, 12, 2, 15, 3, 21, 4, 29, 5, 1, 7, 24, 8, 2, 9, 27 );std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}// 160
+{TuringMachine<5> tm (  9, 0, 21, 1, 9, 2, 24, 3, 6, 4, 3, 5, 20, 6, 17, 7, 0, 9, 15 );std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}// 32
+
+{TuringMachine<5> tm (  9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8 );std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}// 26
+{TuringMachine<5> tm (  9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}   // 21
+  
+  
+  
+  
   //14 314
   // TuringMachine<5> tm ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );
 
-  {TuringMachine<5> tm ( 9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
+  //{TuringMachine<5> tm ( 9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
   
   //{TuringMachine<5> tm ( 9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12);std::cout << tm;long ones = tm.start ();std::cout << ones << " " << tm.step_counter+1 << std::endl;}
   
