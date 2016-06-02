@@ -174,14 +174,16 @@ class SamuBrain
     int newc {0};
 
     std::vector<int> config;
+    int cN {1};
 
 public:
     SamuBrain ( int w = 30, int h = 20 );
     ~SamuBrain();
 
-    void learning ( int **reality, int *, int, int **predictions, int*** fp, int *** fr );
+    int learning ( int **reality, int *, int, int **predictions, int*** fp, int *** fr );
     int getW() const;
     int getH() const;
+    int get_cN() const {return cN;}
     bool isSearching() const;
     int nofMPUs() const;
     std::string get_foobar() const;

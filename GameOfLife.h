@@ -102,7 +102,8 @@ class GameOfLife// : public QThread
     void control_Movie ( int **nextLattice, int );
     
     TuringMachine<5> *tm;
-    int center_of_tape[2*10+1];
+    int center_of_tape[2*1000+1];
+    int scot = 0;
     
 public:
     GameOfLife ( int w = 30, int h = 20 );

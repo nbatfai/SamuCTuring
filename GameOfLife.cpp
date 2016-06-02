@@ -95,16 +95,18 @@ GameOfLife::GameOfLife(int w, int h) : m_w(w), m_h(h)
 
 
 
-tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );// 314 (14)
+//tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8 );// 26
+//tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1 );// 314 (14)
+//tm = new TuringMachine<5> (9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12);   // 21
+//tm = new TuringMachine<5> ( 9, 0, 21, 1, 9, 2, 24, 3, 6, 4, 3, 5, 20, 6, 17, 7, 0, 9, 15 );// 32
+//tm = new TuringMachine<5> ( 9, 0, 9, 1, 12, 2, 15, 3, 21, 4, 29, 5, 1, 7, 24, 8, 2, 9, 27 );// 160    
+tm = new TuringMachine<5> ( 9, 0, 11, 1, 12, 2, 17, 3, 23, 4, 3, 5, 8, 6, 26, 8, 15, 9, 5 );// Schult, 501
+    
 //tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0 ); // Marxen-Buntrock, 4097
 //tm = new TuringMachine<5> ( 9, 0, 11, 2, 15, 3, 17, 4, 26, 5, 18, 6, 15, 7, 6, 8, 23, 9, 5 );// Uhing, 1471
 //tm = new TuringMachine<5> ( 9, 0, 11, 1, 15, 2, 0, 3, 18, 4, 3, 6, 9, 7, 29, 8, 20, 9, 8 );// Uhing, 1915
-//tm = new TuringMachine<5> ( 9, 0, 11, 1, 12, 2, 17, 3, 23, 4, 3, 5, 8, 6, 26, 8, 15, 9, 5 );// Schult, 501
-//tm = new TuringMachine<5> ( 9, 0, 9, 1, 12, 2, 15, 3, 21, 4, 29, 5, 1, 7, 24, 8, 2, 9, 27 );// 160
-//tm = new TuringMachine<5> ( 9, 0, 21, 1, 9, 2, 24, 3, 6, 4, 3, 5, 20, 6, 17, 7, 0, 9, 15 );// 32
 
-    //tm = new TuringMachine<5> ( 9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8 );// 26
-    //tm = new TuringMachine<5> (9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12);   // 21
+
 
 }
 
@@ -152,7 +154,25 @@ void GameOfLife::run()
 
             //if ( samuBrain )
             //{
-            samuBrain->learning(lattices[latticeIndex], center_of_tape, 10, predictions, &fp, &fr);
+            int r=samuBrain->learning(lattices[latticeIndex], center_of_tape, 1000, predictions, &fp, &fr);
+	    
+	    if(r<0)
+	    {
+            std::cout << "<<< New configuration: config" << samuBrain->get_cN() 
+	    << " " << m_time << " <<<" << std::endl;
+	      
+	      tm->restart_step_by_step();
+	      m_time = 0;
+	      
+	      //if(++scot >= 49)
+	      if(samuBrain->get_cN() >= 1000)
+	      {
+		exit(2);
+	      }
+	    }
+	    
+	    
+	    
             /*std::cout << m_time
                      << "   #MPUs:" << samuBrain->nofMPUs()
                      << "Observation (MPU):" << samuBrain->get_foobar().c_str()<< std::endl;*/
@@ -316,18 +336,20 @@ void GameOfLife::control_Stroop(int **nextLattice)
 void GameOfLife::development()
 {
 
+  static int ex = 0;
+  
     //int **prevLattice = lattices[latticeIndex];
     int **nextLattice = lattices[latticeIndex];//lattices[ ( latticeIndex+1 ) %2];
 
     clear_lattice(nextLattice);
 
 
-    int res = tm->step_by_step(center_of_tape, 10);
+    int res = tm->step_by_step(center_of_tape, 1000);
 
 
-    for (int i {0}; i < 2 * 10 + 1; ++i) {
+    for (int i {0}; i < 2 * 1000 + 1; ++i) {
 
-        if (i != 10) {
+        if (i != 1000) {
             nextLattice[0][i] = center_of_tape[i];
         } else {
             nextLattice[0][i] = 100 * center_of_tape[i] + res;
@@ -340,8 +362,19 @@ void GameOfLife::development()
         */
     }
 
+    //if (ex) {
     if (res == -1) {
-        tm->restart_step_by_step();
+        //tm->restart_step_by_step();
+      
+      
+      std::cout << "\n\nSELF REPRO COMP: " << samuBrain->get_cN()  << std::endl;
+
+      
+      exit(1);
+    }
+    if (res == -1) {
+        //tm->restart_step_by_step();
+      ex = 1;
     }
 
     /*

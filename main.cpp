@@ -56,6 +56,6 @@ int main ( int argc, char** argv )
 {
   std::cout << "SamuTuring, exp. 12, COP-based Q-learning, experiments with Turing machines" << std::endl;
   
-  GameOfLife samulife ( 21, 1 );
+  GameOfLife samulife ( 2*1000+1, 1 );
   samulife.run();
 }

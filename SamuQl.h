@@ -807,7 +807,7 @@ public:
         return ap;
     }
 
-    SPOTriplet exec ( int toi, int * center_of_tape, int noc ) {
+    SPOTriplet exec ( int toi, int * center_of_tape, int noc, int noc2 ) {
 
         /*
           int b[3];
@@ -838,8 +838,8 @@ public:
         */
 
         SPOTriplet config;
-        config.reserve ( 100 );
-        for ( int i {-4}; i<= 4; ++i ) {
+        config.reserve ( 1000 );
+        for ( int i {-noc2}; i<= noc2; ++i ) {
             config.push_back ( center_of_tape[tapei+i] );
         }
 
@@ -848,6 +848,75 @@ public:
     }
 
     TransitionRules<5> tr;
+
+// cc*
+
+
+    int prev_center[2*1000+1];
+
+
+    int operator() ( SPOTriplet triplet, int * center_of_tape, int noc, int noc2 ) {
+
+        static int c = 0;
+
+        SPOTriplet action = triplet;
+        int rc {0};
+
+        if ( c>0 ) {
+
+            //auto prg = triplet[noc2];
+
+            // s' = triplet
+            // r' = reward
+
+            int buf[2*1000+1];
+            //std::vector<SPOTriplet> confs;
+
+
+            for ( int i {0}; i<5*2*3; ++i ) {
+
+
+                std::memcpy ( buf, prev_center, ( 2*1000+1 ) *sizeof ( int ) );
+
+                action = exec ( i, buf, noc, noc2 );
+                //if ( action == prev_state ) {
+		if ( action == triplet ) {
+                    ++rc;
+                }
+
+            }
+
+            if ( rc == 0 ) {
+                std::cout << rc << "-0000000000" << std::endl;
+            } else if ( rc == 1 ) {
+                std::cout << rc << "-1111111111" << std::endl;
+            } else {
+                std::cout << rc << "-2222222222" << std::endl;
+		
+	//	std::cout << 
+		
+		
+		
+            }
+        }
+
+        ++c;
+        std::memcpy ( prev_center, center_of_tape, ( 2*1000+1 ) *sizeof ( int ) );
+
+        prev_state = triplet; 		// s <- s'
+
+        if ( rc >1 ) {
+	  c = 0;
+            return -rc;
+        } else {
+            return 0;
+        }
+
+
+
+    }
+
+
 
     SPOTriplet operator() ( SPOTriplet triplet, int * center_of_tape, int noc, int noc2, /*std::string prg,*/ bool isLearning ) {
 
@@ -858,16 +927,16 @@ public:
 
 
 //        if ( prg ==0 ) {
-            std::cout << " QQQ\n";
+        std::cout << " QQQ\n";
 
-            for ( auto i:triplet ) {
-                std::cout  << i << " ";
-            }
-            std::cout << " PPP\n";
+        for ( auto i:triplet ) {
+            std::cout  << i << " ";
+        }
+        std::cout << " PPP\n";
 
-            for ( auto i:prev_action ) {
-                std::cout  << i << " ";
-            }
+        for ( auto i:prev_action ) {
+            std::cout  << i << " ";
+        }
 //        }
 
         double reward =
@@ -945,13 +1014,14 @@ public:
 
             action2 = argmax_ap_f ( prg );
             if ( action2 != -1 && action2 != 99 ) {
-                action = exec ( action2, center_of_tape, noc );
+                action = exec ( action2, center_of_tape, noc, noc2 );
             }
 
-        if ( prg ==0 ) 
-            std::cout << " YYY" << action2 <<std::endl;
-            
-            
+            if ( prg ==0 ) {
+                std::cout << " YYY" << action2 <<std::endl;
+            }
+
+
         }
 
         //prev_state = prg; 		// s <- s'

@@ -57,7 +57,7 @@ SamuBrain::SamuBrain ( int w, int h ) : m_w ( w ), m_h ( h )
 
         m_searching = false;
 	
-	config.reserve(100);
+	config.reserve(1000);
 }
 
 SamuBrain::~SamuBrain()
@@ -316,7 +316,7 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
         */
 
         int r = 0;
-        int c = 10;
+        int c = 100;
 
 
         //  std::stringstream ss;
@@ -397,19 +397,31 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
                                        reality[r][noc],reality[r][noc+1], reality[r][noc+2], reality[r][noc+3], reality[r][noc+4] );
 */	
 	config.clear();
-	for(int i{-4}; i<= 4; ++i)
+	for(int i{-cN}; i<= cN; ++i)
 	  config.push_back(reality[r][noc+i]);
 	
 	
-        SPOTriplet response = samuQl[r][c] ( config, center_of_tape, noc, 4, /*prg,*/ isLearning == 0 );
+        //SPOTriplet response = samuQl[r][c] ( config, center_of_tape, noc, 4, /*prg,*/ isLearning == 0 );
+
+//int response = samuQl[r][c] ( config, center_of_tape, noc, cN);
+sum = samuQl[r][c] ( config, center_of_tape, noc, cN);
 
 
+if(sum < 0)
+{
+  ++cN;
+  
+              std::cout << "<<< cN increased " << cN << " <<<" << std::endl;
+
+}
+
+/*
 //          if ( prev[r][c] )
         if ( prev[r][c] && reality[r][c] )
                 //if ( ( predictions[r][c] == reality[r][c] ) && ( reality[r][c] != 0 ) )
         {
                 ++vsum2;
-                //if (  samuQl[r][c].reward() == samuQl[r][c].get_max_reward()/*reality[r][c] == prev[r][c]*/ )
+                //if (  samuQl[r][c].reward() == samuQl[r][c].get_max_reward())
                 if ( reality[r][c] == prev[r][c] ) {
                         ++sum2;
 //		  if(!isLearning)
@@ -422,7 +434,7 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
                 //if ( ( predictions[r][c] == reality[r][c] ) && ( reality[r][c] != 0 ) )
         {
                 ++vsum;
-                //if (  samuQl[r][c].reward() == samuQl[r][c].get_max_reward()/*reality[r][c] == prev[r][c]*/ )
+                //if (  samuQl[r][c].reward() == samuQl[r][c].get_max_reward())
                 if ( reality[r][c] == prev[r][c] ) {
                         ++sum;
 //		  if(!isLearning)
@@ -450,23 +462,25 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
 
         //prev[r][c] = reality[r][c];
 
+*/
 
 
-
-        for ( int c {0}; c<2*10+1; ++c ) {
+        for ( int c {0}; c<2*1000+1; ++c ) {
                 predictions[r][c] = prev[r][c];
-                prev[r][c] = center_of_tape[c]; // /*predictions[r][c] =*/ response;
+                prev[r][c] = center_of_tape[c]; // 
         }
 
+        
+    /*    
         std::cout  << "\nP> *TM: " << samuQl[r][c].printRules().c_str() << std::endl;
         std::cout  << "P> **TM: (sort) " << samuQl[r][c].printSortedRules().c_str() << std::endl;
         std::string pm = samuQl[r][c].printMachines();
         std::cout  << "P> ***TM: " << pm.c_str() << std::endl;
-
+*/
 //	   std::string tm314 ("9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0");
 //
 
-        std::string tm314 ( "9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1" );
+  //      std::string tm314 ( "9, 0, 9, 1, 11, 2, 5, 3, 20, 4, 17, 5, 24, 7, 29, 8, 15, 9, 1" );
         //std::string tm314 ( "9, 0, 11, 1, 15, 2, 17, 3, 11, 4, 23, 5, 24, 6, 3, 7, 21, 9, 0" );
         //std::string tm314 ( "9, 0, 11, 2, 15, 3, 17, 4, 26, 5, 18, 6, 15, 7, 6, 8, 23, 9, 5" );
         //std::string tm314 ( "9, 0, 11, 1, 15, 2, 0, 3, 18, 4, 3, 6, 9, 7, 29, 8, 20, 9, 8" );
@@ -477,13 +491,15 @@ int SamuBrain::pred ( MORGAN morgan, int **reality, int * center_of_tape, int no
 	//std::string tm314 ( "9, 0, 9, 1, 11, 2, 17, 3, 21, 4, 19, 5, 29, 6, 5, 7, 6, 8, 8");	
 	//std::string tm314 ( "9, 0, 9, 1, 11, 2, 15, 3, 20, 4, 21, 5, 27, 6, 4, 7, 2, 8, 12");
 	
+	/*
+	
         std::size_t found = pm.find ( tm314 );
         if ( found!=std::string::npos ) {
                 std::cout  << " +++++++++++ VAN ++++++++++++++++++++++++++++++++++++++++++"<< std::endl;
         } else {
                 std::cout  << " ----------- NINCS +++++++++++++++++++++++++++++++++++++"<< std::endl;
         }
-
+*/
 
         // aligning to psamu1 paper // if ( ( predictions[r][c] == prev[r][c] ) && ( prev[r][c] != 0 ) )
         /*
@@ -661,8 +677,10 @@ bool Habituation::is_habituation ( int vsum, int sum, double &mon )
 }
 
 
-void SamuBrain::learning ( int **reality, int * center_of_tape, int noc , int **predictions, int ***fp, int ***fr )
+int SamuBrain::learning ( int **reality, int * center_of_tape, int noc , int **predictions, int ***fp, int ***fr )
 {
+  int ret;
+  
         this->fp = fp;
         this->fr = fr;
 
@@ -687,7 +705,7 @@ void SamuBrain::learning ( int **reality, int * center_of_tape, int noc , int **
 
                         MORGAN morgan = mpu.second;
 
-                        sum = pred ( morgan, reality, center_of_tape, noc, predictions, 4, vsum, sum2, vsum2 );
+                        ret = sum = pred ( morgan, reality, center_of_tape, noc, predictions, 4, vsum, sum2, vsum2 );
 
                         double mon {-1.0}, mon2 {-1.0};
 
@@ -786,7 +804,7 @@ void SamuBrain::learning ( int **reality, int * center_of_tape, int noc , int **
         else {
 
                 //sum = pred ( reality, predictions, !searching, vsum ); //!haveAlreadyLearnt, vsum );
-                sum = pred ( reality, center_of_tape, noc, predictions, m_haveAlreadyLearnt?5:0, vsum, sum2, vsum2 );
+                ret = sum = pred ( reality, center_of_tape, noc, predictions, m_haveAlreadyLearnt?5:0, vsum, sum2, vsum2 );
 
                 double mon {-1.0};
                 Habituation& h = m_morgan->getHabituation();
@@ -857,6 +875,8 @@ void SamuBrain::learning ( int **reality, int * center_of_tape, int noc , int **
 
         }
 
+        
+        return ret;
 }
 
 void SamuBrain::init_MPUs ( bool ex )
