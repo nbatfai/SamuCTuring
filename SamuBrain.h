@@ -51,8 +51,6 @@
  * https://youtu.be/VujHHeYuzIk
  */
 
-#include <QThread>
-#include <QDebug>
 #include <sstream>
 #include "SamuQl.h"
 #include <vector>
@@ -174,7 +172,7 @@ class SamuBrain
     int newc {0};
 
     std::vector<int> config;
-    int cN {1};
+    int cN {595};
 
 public:
     SamuBrain ( int w = 30, int h = 20 );

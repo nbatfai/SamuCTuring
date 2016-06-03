@@ -52,8 +52,6 @@
  */
 
 
-#include <QThread>
-#include <QDebug>
 #include <sstream>
 
 #include "SamuBrain.h"
