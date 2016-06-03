@@ -838,7 +838,7 @@ public:
         */
 
         SPOTriplet config;
-        config.reserve ( 1000 );
+        config.reserve ( 10000 );
         for ( int i {-noc2}; i<= noc2; ++i ) {
             config.push_back ( center_of_tape[tapei+i] );
         }
@@ -852,7 +852,7 @@ public:
 // cc*
 
 
-    int prev_center[2*1000+1];
+    int prev_center[2*10000+1];
 
 
     int operator() ( SPOTriplet triplet, int * center_of_tape, int noc, int noc2 ) {
@@ -869,14 +869,14 @@ public:
             // s' = triplet
             // r' = reward
 
-            int buf[2*1000+1];
+            int buf[2*10000+1];
             //std::vector<SPOTriplet> confs;
 
 
             for ( int i {0}; i<5*2*3; ++i ) {
 
 
-                std::memcpy ( buf, prev_center, ( 2*1000+1 ) *sizeof ( int ) );
+                std::memcpy ( buf, prev_center, ( 2*10000+1 ) *sizeof ( int ) );
 
                 action = exec ( i, buf, noc, noc2 );
                 //if ( action == prev_state ) {
@@ -886,13 +886,15 @@ public:
 
             }
 
+            /*
             if ( rc == 0 ) {
                 std::cout << rc << "-0000000000" << std::endl;
             } else if ( rc == 1 ) {
                 std::cout << rc << "-1111111111" << std::endl;
             } else {
                 std::cout << rc << "-2222222222" << std::endl;
-		
+		*/
+	    
 	//	std::cout << 
 		
 		
@@ -901,7 +903,7 @@ public:
         }
 
         ++c;
-        std::memcpy ( prev_center, center_of_tape, ( 2*1000+1 ) *sizeof ( int ) );
+        std::memcpy ( prev_center, center_of_tape, ( 2*10000+1 ) *sizeof ( int ) );
 
         prev_state = triplet; 		// s <- s'
 

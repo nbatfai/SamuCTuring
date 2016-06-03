@@ -741,12 +741,13 @@ std::pair<int, int> p {state * 2 + tape.get_tape ( tape.tapei ), toi};
   */
   ++ruleStat[std::make_pair(state * 2 + tape.get_tape ( tape.tapei ), toi)];
   
-  std::cout << "R> " << ruleStat.size() ;
+  //std::cout << "R> " << ruleStat.size() ;
+  /*
           for ( auto& rule : ruleStat ) {
 	               std::cout << ", " <<rule.first.first <<"->"  << rule.first.second << "(" << rule.second<< ") ";
  
 	  }
-
+*/
   
   if ( toi >= 0 )
     {

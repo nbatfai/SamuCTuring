@@ -104,6 +104,8 @@ public:
 
 typedef QL** MPU;
 
+
+
 class MentalProcessingUnit
 {
     int m_w {40}, m_h {30};
@@ -114,6 +116,7 @@ class MentalProcessingUnit
     int** fr;
     int** fp;
 
+    
 public:
     MentalProcessingUnit ( int w = 30, int h = 20 );
     ~MentalProcessingUnit();
@@ -172,7 +175,9 @@ class SamuBrain
     int newc {0};
 
     std::vector<int> config;
-    int cN {595};
+    //int cN {1404};
+int cN {1};    
+    QL singleSamuQl;
 
 public:
     SamuBrain ( int w = 30, int h = 20 );
