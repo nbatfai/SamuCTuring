@@ -30,7 +30,7 @@ cmake_minimum_required(VERSION 2.8.5)
 project(SAMUCTURING)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -O3 ")
 
 add_definitions(-DLIFEOFGAME)
 add_definitions(-DQ_LOOKUP_TABLE)
@@ -41,5 +41,5 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc
 )
 
-add_executable(SamuCTuring orchmach1.hpp SamuQl.h GameOfLife.cpp GameOfLife.h SamuBrain.cpp SamuBrain.h  main.cpp  )
+add_executable(SamuCTuring orchmach1.hpp SamuQl.h GameOfLife.h SamuBrain.cpp SamuBrain.h  main.cpp  )
 

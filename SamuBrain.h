@@ -102,7 +102,7 @@ public:
 
 };
 
-typedef QL** MPU;
+typedef QL<10000>** MPU;
 
 
 
@@ -121,6 +121,7 @@ public:
     MentalProcessingUnit ( int w = 30, int h = 20 );
     ~MentalProcessingUnit();
 
+    
     MPU getSamu() {
         return m_samuQl;
     }
@@ -176,8 +177,8 @@ class SamuBrain
 
     std::vector<int> config;
     //int cN {1404};
-int cN {1};    
-    QL singleSamuQl;
+    int cN {1};    
+    QL<10000> singleSamuQl;
 
 public:
     SamuBrain ( int w = 30, int h = 20 );

@@ -295,6 +295,7 @@ typedef ConfigN SPOTriplet;
 //typedef std::pair<std::string, SPOTriplet> ReinforcedAction;
 typedef std::pair<int, int> ReinforcedAction;
 
+template<int MAXcN>
 class QL
 {
 public:
@@ -838,7 +839,7 @@ public:
         */
 
         SPOTriplet config;
-        config.reserve ( 10000 );
+        config.reserve ( MAXcN );
         for ( int i {-noc2}; i<= noc2; ++i ) {
             config.push_back ( center_of_tape[tapei+i] );
         }
@@ -852,7 +853,7 @@ public:
 // cc*
 
 
-    int prev_center[2*10000+1];
+    int prev_center[2*MAXcN+1];
 
 
     int operator() ( SPOTriplet triplet, int * center_of_tape, int noc, int noc2 ) {
@@ -869,14 +870,14 @@ public:
             // s' = triplet
             // r' = reward
 
-            int buf[2*10000+1];
+            int buf[2*MAXcN+1];
             //std::vector<SPOTriplet> confs;
 
 
             for ( int i {0}; i<5*2*3; ++i ) {
 
 
-                std::memcpy ( buf, prev_center, ( 2*10000+1 ) *sizeof ( int ) );
+                std::memcpy ( buf, prev_center, ( 2*MAXcN+1 ) *sizeof ( int ) );
 
                 action = exec ( i, buf, noc, noc2 );
                 //if ( action == prev_state ) {
@@ -884,6 +885,9 @@ public:
                     ++rc;
                 }
 
+                if(rc >= 2)
+		  break;
+                
             }
 
             /*
@@ -904,7 +908,7 @@ public:
         }
 
         ++c;
-        std::memcpy ( prev_center, center_of_tape, ( 2*10000+1 ) *sizeof ( int ) );
+        std::memcpy ( prev_center, center_of_tape, ( 2*MAXcN+1 ) *sizeof ( int ) );
 
         prev_state = triplet; 		// s <- s'
 
@@ -1067,7 +1071,7 @@ public:
         }
 
     }
-
+/*
     void clear ( void ) {
         tree = &root;
         depth = 0;
@@ -1079,7 +1083,7 @@ public:
         //debug_tree ( &root, std::cerr );
         depth = save_depth;
     }
-
+*/
     double sigmoid ( int n ) {
         return 1.0/ ( 1.0 + exp ( -n ) );
     }
@@ -1230,7 +1234,7 @@ public:
     double get_min_reward ( void ) const {
         return min_reward;
     }
-
+/*
     void operator<< ( SPOTriplet triplet ) {
         TripletNode *p = tree->getChild ( triplet );
         if ( !p ) {
@@ -1249,7 +1253,7 @@ public:
             ++depth;
         }
     }
-
+*/
     ReinforcedAction reinforcedAction() const {
         return reinforced_action;
     }
@@ -1416,7 +1420,7 @@ public:
 
 
 private:
-
+/*
     class TripletNode
     {
     public:
@@ -1455,7 +1459,7 @@ private:
     TripletNode root;
     TripletNode *tree;
     int depth {0};
-
+*/
     /*
     std::random_device zinit;
     std::default_random_engine zgen {zinit() };

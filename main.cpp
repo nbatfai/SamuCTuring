@@ -56,6 +56,6 @@ int main ( int argc, char** argv )
 {
   std::cout << "SamuTuring, exp. 14, self-reproduction complexity, experiments with Turing machines" << std::endl;
   
-  GameOfLife samulife ( 2*10000+1, 1 );
+  GameOfLife<10000> samulife ( 2*10000+1, 1 );
   samulife.run();
 }
