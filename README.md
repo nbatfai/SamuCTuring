@@ -1,7 +1,7 @@
 # SamuCTuring
 This project is forked from https://github.com/nbatfai/SamuTuring that has been rewritten without Qt.
 
-## SamuKnows, exp. 12, cognitive mental organs: MPU (Mental Processing Unit)
+## SamuTuring, exp. 14, self-reproduction complexity, experiments with Turing machines
 This experiment is an example of the paper entitled "Theoretical Robopsychology: Samu Has Learned Turing Machines". 
 
 
@@ -9,11 +9,11 @@ This experiment is an example of the paper entitled "Theoretical Robopsychology:
 
 
 ```
-git clone https://github.com/nbatfai/SamuCTuring.git
+git clone -b  self-reproducing_complexity  https://github.com/nbatfai/SamuCTuring.git
 cd SamuCTuring/
-~/Qt/5.6/gcc_64/bin/qmake SamuLife.pro
+cmake .
 make
-./SamuCTuring 2>out
+./SamuCTuring
 ```
 
 ## Previous other experiments

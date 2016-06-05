@@ -176,7 +176,7 @@ class SamuBrain
     int newc {0};
 
     std::vector<int> config;
-    int cN {5350};
+    int cN {5310};
     //int cN {1};    
     QL<5602> singleSamuQl;
 
