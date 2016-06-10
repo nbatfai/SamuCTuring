@@ -3,7 +3,7 @@ This project is forked from https://github.com/nbatfai/SamuTuring that has been 
 
 ## SamuKnows, exp. 12, cognitive mental organs: MPU (Mental Processing Unit)
 This experiment is an example of the paper entitled "Theoretical Robopsychology: Samu Has Learned Turing Machines". 
-
+http://arxiv.org/abs/1606.02767
 
 ## Usage
 
