@@ -3,7 +3,7 @@ This project is forked from https://github.com/nbatfai/SamuTuring that has been 
 
 ## SamuTuring, exp. 14, self-reproduction complexity, experiments with Turing machines
 This experiment is an example of the paper entitled "Theoretical Robopsychology: Samu Has Learned Turing Machines". 
-
+http://arxiv.org/abs/1606.02767
 
 ## Usage
 
