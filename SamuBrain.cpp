@@ -58,7 +58,7 @@ SamuBrain::SamuBrain(int w, int h) : m_w(w), m_h(h)
 
           m_searching = false;
     */
-    config.reserve(10000);
+    config.reserve(12010);
 }
 
 SamuBrain::~SamuBrain()
