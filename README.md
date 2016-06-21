@@ -73,3 +73,8 @@ https://github.com/nbatfai/SamuTuring
 
 Samu C. Turing
 https://github.com/nbatfai/SamuCTuring
+
+---
+
+SamuSmartCity
+https://github.com/nbatfai/SamuSmartCity
